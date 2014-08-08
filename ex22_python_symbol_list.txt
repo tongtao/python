@@ -1,0 +1,41 @@
+# -*- coding: utf-8 -*-
+
+#What Do You Know So Far?
+#ex22_python_symbol_list
+
+1)自己打上一遍
+2)查找错误，记录并在下次开始前回顾
+3)学习一个阶段就回顾总结要点，以反复记忆
+4)阅读实际代码
+
+print	打印
+print "字符串", 表达式
+print "字符串", 变量
+print "%r, %r" % (变量, 表达式) 
+print 变量 + 变量
+print sth，  (逗号结尾)
+print " " * number
+raw_input() 或  raw_input("sth.")
+
+#	注释
+%	格式化
+\	转义
+"""   """   或  '''   '''
+
+from sys import argv
+script, var1, var2 = argv	取出命令变量
+from os.path import exists
+exists(file)   file是否存在
+
+f = open(file) 打开文件，返回文件结构体
+f.read() 读全部 
+f.read(字节数)
+f.write(内容) 写入
+f.truncate() 清空
+f.seek(offset[, whence])
+f.close() 保存并关闭
+
+def fun_name(*args)  put them in args as a list
+def fun_name(arg1, arg2)
+def fun_name()
+	return

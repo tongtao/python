@@ -1,0 +1,8 @@
+# -*- coding: utf-8 -*-
+
+#Read Some Code
+#ex23_read_code.txt
+
+1.找到你需要的代码
+2.通读代码，找到文件
+3.尝试理解你找到的代码
