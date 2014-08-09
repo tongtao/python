@@ -1,0 +1,50 @@
+# -*- coding: utf-8 -*-
+
+#Symbol Review
+#ex37_symbol_keyword.txt
+
+Keywords
+and			Logical and.								True and False == False
+as			Part of the with-as statement				with X as Y : pass
+assert		Assert (ensure) that something is true.		assert False, "Error!"
+break		Stop this loop right now.					while True: break
+class		Define a class								class Person(object)
+continue	Don't process more of the loop, do it again	while True: continue
+def			Define a function							def X(): pass
+del			Delete from dictionary						del X[Y]
+elif		Else if condition							if: X; elif: Y; else: J
+else		Else condition								if: X; elif: Y; else: J
+except		If an exception happens, do this.			except ValueError, e: print e
+exec		Run a string as Pyhton						exec 'print "Hello"'
+finally		Exceptions or not, finally do this no 		finally: pass
+			matter what
+for			Loop over a collection of stings			for X in Y: pass
+from		Importing specific parts of a module		import X from Y
+global		Declare that you want a global variable		global X
+if			If condition								if: X; elif: Y; else: J
+import		Import a module into this one to use		import os
+in			Part of for-loops. Also a test of X in Y	for X in Y: pass ALSO 1 in [1] == True
+is			Like == to test equality					1 is 1 == True
+lambda		Create a short anonymous function			s = lambda y: y ** y; s(3)
+not			Logical	not									not True == False
+or			Logical or									True or False == True
+pass		This block is empty							def empty(): pass
+print		Print this string							print 'this string'
+raise		Raise an exception when things go wrong		raise ValueError("No")	
+return		Exit the function with a return value		def X(): return Y
+try			Try this block, and if exception, 			try: pass
+			go to except		
+while		While loop									while X: pass
+with		With an expression as a variable do			with X as Y: pass	
+
+Data Types
+True		True boolean value						True or False == True
+False		False boolean value						False and True == False
+None		Represents "nothing" or "no value"		x = None
+strings		Stores textual information				x = "hello"
+numbers		Stores integers							x = 100
+floats		Store decimals							i = 10.389
+lists		Stores a list of things					j = [1, 2, 3, 4]
+dicts		Stores a key = value mapping of things	e = {'x':1, 'y':2}
+
+	
