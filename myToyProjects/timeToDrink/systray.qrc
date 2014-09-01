@@ -1,0 +1,8 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/">
+   <file alias="alarm.png">images/alarm.png</file>
+   <file alias="circle_play.png">images/circle_play.png</file>
+   <file alias="circle_minus.png">images/circle_minus.png</file>
+   <file alias="circle_delete.png">images/circle_delete.png</file>
+</qresource>
+</RCC>
