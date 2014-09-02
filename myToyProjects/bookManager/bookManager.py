@@ -13,6 +13,7 @@ from PyQt4.QtGui import*
 import ui_bookManagerWindow
 import ui_fileInfoEdit
 
+
 class fileInfoEdit(QDialog,
 				ui_fileInfoEdit.Ui_fileInfoEdit):
 	def __init__(self, info, text, callback, parent=None):
@@ -105,6 +106,24 @@ class bookManager(QMainWindow,
 		infoDockWidget.setWidget(self.textEdit)
 		self.addDockWidget(Qt.RightDockWidgetArea, infoDockWidget)
 
+		
+		# 加入下拉框选择根目录
+		self.fileRootBar = self.addToolBar("root")
+		self.fileRootBar.setObjectName("fileToolBar")
+		self.fileRootBox = QComboBox()
+		self.fileRootBox.setFocusPolicy(Qt.NoFocus)
+		self.fileRootBox.insertItem(1, u"中文")
+
+		self.fileRootBar.addWidget(self.fileRootBox)
+		
+		# 加入lineEdit 输入定制的根目录
+		self.fileRootInput = QLineEdit()
+		self.fileRootBar.addWidget(self.fileRootInput)
+		
+		self.rootButton = QPushButton(u"增加")
+		self.fileRootBar.addWidget(self.rootButton)
+		
+		self.rootButton.clicked.connect(self.addRootFile)
 		# 更新文件树
 		self.actionSyncTree.triggered.connect(self.syncTree)
 		# 打开选中文件
@@ -115,7 +134,7 @@ class bookManager(QMainWindow,
 		self.actionEdit.triggered.connect(self.editUseInfo)
 		
 
-	
+		
 	# 根据配置文件和读取的文件夹信息 生成文件信息
 	def creatUseInfo(self):
 		
