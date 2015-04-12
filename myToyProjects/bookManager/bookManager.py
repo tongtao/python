@@ -123,7 +123,7 @@ class bookManager(QMainWindow,
 		self.rootButton = QPushButton(u"增加")
 		self.fileRootBar.addWidget(self.rootButton)
 		
-		self.rootButton.clicked.connect(self.addRootFile)
+		#self.rootButton.clicked.connect(self.addRootFile)
 		# 更新文件树
 		self.actionSyncTree.triggered.connect(self.syncTree)
 		# 打开选中文件
