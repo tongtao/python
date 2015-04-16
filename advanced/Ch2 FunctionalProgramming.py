@@ -333,7 +333,7 @@ def performance(f):
 def factorial(n):
     return reduce(lambda x,y: x*y, range(1, n+1))
 
-print factorial(200)
+print factorial(10)
 
 # 2-13 编写带参数decorator
 
@@ -352,4 +352,98 @@ print factorial(200)
 # @log_decorator
 # def my_func():
     # pass
+    
+def log(prefix):
+    def log_decorator(f):
+        def wrapper(*args, **kw):
+            print '[%s] %s()...' % (prefix, f.__name__)
+            return f(*args, **kw)
+        return wrapper
+    return log_decorator
 
+@log('DEBUG')
+def test():
+    pass
+print test()
+# [DEBUG] test()...
+# None
+
+# Task:上一节的@performance只能打印秒，请给 @performace 增加一个参数，允许传入's'或'ms'：
+
+def performance(unit):
+    def performace_decorator(f):
+        def wrapper(*args, **kw):
+            t1 = time.time()
+            r = f(*args, **kw)
+            t2 = time.time()
+            
+            t = (t2 - t1) * 1000 if unit == 'ms' else (t2 - t1) # 怎样返回ms? 乘以1000就好了。 还有这种if-else写法
+            print 'call %s() in %f %s' % (f.__name__, t, unit)
+            return r
+        return wrapper
+    return performace_decorator     #三次返回！！！
+                
+
+@performance('ms')
+def factorial(n):
+    return reduce(lambda x,y: x*y, range(1, n+1))
+
+print factorial(10)
+
+# 2-14 完善decorator
+
+#   @decorator可以动态实现函数功能的增加，
+#   但是，经过@decorator“改造”后的函数，和原函数相比，
+#   __name__,__doc__等属性被改变了
+
+#   可以手动还原一下
+# def log(f):
+    # def wrapper(*args, **kw):
+        # print 'call...'
+        # return f(*args, **kw)
+    # wrapper.__name__ = f.__name__
+    # wrapper.__doc__ = f.__doc__
+    # return wrapper
+    
+#   但更效率的是用functools自动完成
+# import functools
+# def log(f):
+    # @functools.wraps(f)
+    # def wrapper(*args, **kw):
+        # print 'call...'
+        # return f(*args, **kw)
+    # return wrapper
+    
+# 注意@functools.wraps应该作用在返回的新函数上。
+
+
+# 2-15 偏函数
+
+#   当一个函数有很多参数时，调用者就需要提供多个参数。如果
+#   减少参数个数，就可以简化调用者的负担。
+
+#   比如，int()函数可以把字符串转换为整数，
+#   当仅传入字符串时，int()函数默认按十进制转换：
+print int('12345')+1
+
+#   但int()函数还提供额外的base参数，默认值为10。
+#   如果传入base参数，就可以做 N 进制的转换：
+print int('12345', base=16)
+
+#   functools.partial就是帮助我们创建一个偏函数的，
+#   不需要我们自己定义int2()，可以直接使用下面的代码创建一个新的函数int2：
+import functools
+int2 = functools.partial(int, base=2)
+print int2('10101010')
+
+#   functools.partial可以把一个参数多的函数变成一个参数少的新函数，
+#   少的参数需要在创建时指定默认值，这样，新函数调用的难度就降低了。
+
+# Task:在第7节中，我们在sorted这个高阶函数中传入自定义排序函数就可以实现忽略大小写排序。
+#       请用functools.partial把这个复杂调用变成一个简单的函数：
+
+sorted_ignore_case = functools.partial(sorted, cmp=cmp_ignore_case)
+print sorted_ignore_case(['bob', 'about', 'Zoo', 'Credit'])
+
+
+# 最后几节学完 理解和感触不是很深   待记熟后在实践中尝试应用吧
