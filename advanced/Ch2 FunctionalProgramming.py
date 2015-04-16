@@ -198,8 +198,158 @@ print f()
 
 # 2-9 闭包
 
+#   在函数内部定义的函数和外部定义的函数是一样的，只是他们无法被外部访问
+#   考察上一小节定义的 calc_sum 函数
+#   发现没法把 lazy_sum 移到 calc_sum 的外部，因为它引用了 calc_sum 的参数 lst。
+#   像这种内层函数引用了外层函数的变量（参数也算变量），然后返回内层函数的情况，称为闭包（Closure）。
+
+#   闭包的特点是返回的函数还引用了外层函数的局部变量，
+#   所以，要正确使用闭包，就要确保引用的局部变量在函数返回后不能变。举例如下：
+# 希望一次返回3个函数，分别计算1x1,2x2,3x3:
+def count():
+    fs = []
+    for i in range(1, 4):
+        def f():
+             return i*i
+        fs.append(f)        #一次返回多个值的方法
+    return fs
+
+f1, f2, f3 = count()
+print f1(), f2(), f3()
+#   9 9 9  而不是1 4 9
+#   原因就是当count()函数返回了3个函数时，这3个函数所引用的变量 i 的值已经变成了3。
+#   因此，返回函数不要引用任何循环变量，或者外部函数（count)后续执行会发生变化的变量。
+
+# Task: 返回闭包不能引用循环变量，请改写count()函数，让它正确返回能计算1x1、2x2、3x3的函数。
+def count():
+    fs = []
+    for i in range(1, 4):
+        def f(j):
+            def g():
+                return j*j
+            return g    #再加一次闭包，这样i的当前值就保留下来了
+        r = f(i)           
+        fs.append(r)
+    return fs
+
+f1, f2, f3 = count()
+print f1(), f2(), f3()
+# 1 4 9
 
 
+# 2-10 匿名函数
+
+#   高阶函数可以接收函数做参数，有些时候，我们不需要显式地定义函数，直接传入匿名函数更方便。
+#   在Python中，对匿名函数提供了有限支持。
+#   还是以map()函数为例，计算 f(x)=x2 时，除了定义一个f(x)的函数外，还可以直接传入匿名函数：
+print map(lambda x: x * x, [1, 2, 3, 4])
+# [1, 4, 9, 16]
+
+#   关键字lambda 表示匿名函数，冒号前面的 x 表示函数参数。
+#   使用匿名函数，可以不必定义函数名，直接创建一个函数对象，很多时候可以简化代码：
+print  sorted([1, 3, 9, 5, 0], lambda x,y: -cmp(x,y))
+# [9, 5, 3, 1, 0]
+
+#   返回函数的时候，也可以返回匿名函数：
+myabs = lambda x: -x if x < 0 else x 
+print myabs(-1)
+
+# Task:利用匿名函数简化以下代码：
+# def is_not_empty(s):
+#     return s and len(s.strip()) > 0
+# filter(is_not_empty, ['test', None, '', 'str', '  ', 'END'])
+
+print filter(lambda s: s and len(s.strip()) > 0, ['test', None, '', 'str', '  ', 'END'])
+# ['test', 'str', 'END']
 
 
+# 2-11 decorator装饰器
+
+# 问题：定义了一个函数，想在运行时动态增加其功能，
+#       又不想改动函数本身的代码
+
+# ex: 希望对下列函数调用增加log功能
+def new_fn(f):  #装饰器函数
+    def fn(x):  
+        print 'call' + f.__name__ + '()'
+        return f(x)
+    return fn
+    
+def f1(x):
+    return x*2
+
+@new_fn    
+def f2(x):
+    return x*x
+    
+def f3(x):
+    return x*x*x
+#   通过高阶函数返回新函数
+
+f1 = new_fn(f1) #f1 就彻底隐藏了
+print f1(5)
+# callf1()
+# 10
+
+#   内置@就是为了简化装饰器调用
+print f2(5)
+# callf2()
+# 25
+
+#   装饰器作用，极大简化代码，避免每个函数编写重复性代码
+#   打印日志：@log
+#   检测性能：@performance
+#   数据库事务：@transaction
+#   URL路由：@post('/register')
+
+
+# 2-12 编写无参数decorator
+
+#   Python的 decorator 本质上就是一个高阶函数，它接收一个函数作为参数，然后，返回一个新函数。
+#   使用 decorator 用Python提供的 @ 语法，这样可以避免手动编写 f = decorate(f) 这样的代码。
+
+#   要让 @log 自适应任何参数定义的函数，可以利用Python的 *args 和 **kw，保证任意个数的参数总是能正常调用：
+def log(f):
+    def fn(*args, **kw):
+        print 'call ' + f.__name__ + '()...'
+        return f(*args, **kw)
+    return fn
+
+# Task:请编写一个@performance，它可以打印出函数调用的时间。
+# 好好体会
+import time
+
+def performance(f):
+    def fn(*args, **kw):
+        tbegin = time.time()
+        r = f(*args, **kw)
+        tend = time.time()
+        print 'call %s() in %fs' % (f.__name__, (tend - tbegin))
+        #print tbegin, tend
+        return r
+    return fn
+
+@performance
+def factorial(n):
+    return reduce(lambda x,y: x*y, range(1, n+1))
+
+print factorial(200)
+
+# 2-13 编写带参数decorator
+
+#   参照上节的log,发现对于被装饰的函数，log打印的语句是不能变的（除了函数名）。
+#   希望log函数本身就需要传入'INFO'或'DEBUG'这样的参数，类似这样：
+# @log('DEBUG')
+# def my_func():
+    # pass
+#   翻译成高阶函数调用
+# my_func = log('DEBUG')(my_func)
+#   再扩展一下
+# log_decorator = log('DEBUG')
+# my_func = log_decorator(my_func)
+#   又相当于
+# log_decorator = log('DEBUG')
+# @log_decorator
+# def my_func():
+    # pass
 
